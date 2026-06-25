@@ -10,14 +10,15 @@ const sendBtn = document.getElementById('send-btn');
 const statusDiv = document.getElementById('status');
 
 let engine;
-const MODEL_NAME = "Llama-3.2-1B-Instruct-q4f16_1-MLC"; 
+// Đổi sang mô hình TinyLlama siêu nhẹ để không bị Apple chặn RAM
+const MODEL_NAME = "TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC"; 
 
 async function initAI() {
     try {
-        statusDiv.innerText = "Đang chuẩn bị tải Model về bộ nhớ đệm iPhone...";
+        statusDiv.innerText = "Đang chuẩn bị tải Model siêu nhẹ (TinyLlama)...";
         engine = await CreateMLCEngine(MODEL_NAME, {
             initProgressCallback: (progress) => {
-                statusDiv.innerText = `Đang tải dữ liệu AI: ${Math.round(progress.progress * 100)}% (Vui lòng không tắt màn hình)`;
+                statusDiv.innerText = `Đang tải dữ liệu: ${Math.round(progress.progress * 100)}% (Xin đừng tắt màn hình)`;
             }
         });
         statusDiv.innerText = "AI Cục Bộ Đã Sẵn Sàng (Offline Mode)";
@@ -25,7 +26,7 @@ async function initAI() {
         sendBtn.disabled = false;
         userInput.placeholder = "Hỏi gì đó với AI local...";
     } catch (error) {
-        statusDiv.innerText = "Lỗi khởi tạo: Thiết bị không hỗ trợ WebGPU hoặc vượt giới hạn RAM.";
+        statusDiv.innerText = "Lỗi khởi tạo: Vượt quá giới hạn RAM của iOS.";
         console.error(error);
     }
 }
@@ -44,10 +45,10 @@ async function handleSend() {
 
     appendMessage(text, 'user');
     userInput.value = '';
-    statusDiv.innerText = "AI đang xử lý trên chip A15 Bionic...";
+    statusDiv.innerText = "AI đang xử lý...";
 
     const messages = [
-        { role: "system", content: "Bạn là một trợ lý AI chạy local hoàn toàn trên điện thoại người dùng. Hãy trả lời ngắn gọn, rõ ràng bằng tiếng Việt." },
+        { role: "system", content: "Bạn là một trợ lý AI nhỏ gọn." },
         { role: "user", content: text }
     ];
 
